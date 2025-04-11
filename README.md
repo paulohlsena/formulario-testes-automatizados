@@ -64,7 +64,7 @@ Para visualizá-lo, basta abrir o arquivo `.html` no navegador.
 ## 📁 Estrutura do Projeto
 
 ```
-testeformulario/
+formulario-testes-automatizados/
 │
 ├── src/
 │   └── test/
