@@ -9,10 +9,8 @@ import org.openqa.selenium.support.ui.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.nio.file.*;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -67,11 +65,16 @@ public class FormularioTest {
         String caminho = "target/screenshots/" + nomeArquivo + ".png";
         try {
             Files.createDirectories(Paths.get("target/screenshots"));
-            Files.copy(src.toPath(), Paths.get(caminho));
+            Files.copy(src.toPath(), Paths.get(caminho), StandardCopyOption.REPLACE_EXISTING);
             test.addScreenCaptureFromPath(caminho);
         } catch (IOException e) {
-            test.warning("❗ Erro ao capturar screenshot: " + e.getMessage());
+            test.warning("Erro ao capturar screenshot: " + e.getMessage());
         }
+    }
+
+    private String gerarNomeArquivo(String prefixo) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        return prefixo + "_" + LocalDateTime.now().format(formatter);
     }
 
     @Test
@@ -90,11 +93,11 @@ public class FormularioTest {
             Assertions.assertEquals("Cadastro realizado com sucesso!", mensagem.getText());
             test.pass("ENTAO aparece a mensagem de sucesso");
 
-            capturarScreenshot("cadastro_sucesso", test);
+            capturarScreenshot(gerarNomeArquivo("cadastro_sucesso"), test);
 
         } catch (Exception e) {
-            capturarScreenshot("erro_cadastro_sucesso", test);
-            test.fail("❌ Teste falhou: " + e.getMessage());
+            capturarScreenshot(gerarNomeArquivo("erro_cadastro_sucesso"), test);
+            test.fail("Teste falhou: " + e.getMessage());
             Assertions.fail(e);
         }
     }
@@ -112,12 +115,12 @@ public class FormularioTest {
             wait.until(ExpectedConditions.textToBePresentInElement(erro, "Você precisa ter pelo menos 18 anos."));
 
             Assertions.assertTrue(erro.getText().contains("Você precisa ter pelo menos 18 anos."));
-            test.pass("✅ Validacao de idade realizada com sucesso");
-            capturarScreenshot("menor_idade", test);
+            test.pass("Validacao de idade realizada com sucesso");
+            capturarScreenshot(gerarNomeArquivo("menor_idade"), test);
 
         } catch (Exception e) {
-            capturarScreenshot("erro_menor_idade", test);
-            test.fail("❌ Teste falhou: " + e.getMessage());
+            capturarScreenshot(gerarNomeArquivo("erro_menor_idade"), test);
+            test.fail("Teste falhou: " + e.getMessage());
             Assertions.fail(e);
         }
     }
@@ -135,12 +138,12 @@ public class FormularioTest {
             wait.until(ExpectedConditions.textToBePresentInElement(erro, "As senhas não coincidem."));
 
             Assertions.assertTrue(erro.getText().contains("As senhas não coincidem."));
-            test.pass("✅ Validacao de senhas diferentes realizada");
-            capturarScreenshot("senhas_diferentes", test);
+            test.pass("Validacao de senha realizada com sucesso");
+            capturarScreenshot(gerarNomeArquivo("senhas_diferentes"), test);
 
         } catch (Exception e) {
-            capturarScreenshot("erro_senhas_diferentes", test);
-            test.fail("❌ Teste falhou: " + e.getMessage());
+            capturarScreenshot(gerarNomeArquivo("erro_senhas_diferentes"), test);
+            test.fail("Teste falhou: " + e.getMessage());
             Assertions.fail(e);
         }
     }
@@ -158,13 +161,16 @@ public class FormularioTest {
             wait.until(ExpectedConditions.textToBePresentInElement(erro, "Você deve aceitar os termos."));
 
             Assertions.assertTrue(erro.getText().contains("Você deve aceitar os termos."));
-            test.pass("✅ Validacao de termos nao aceitos realizada");
-            capturarScreenshot("termos_nao_aceitos", test);
+            test.pass("Validacao de termos nao aceitos realizada com sucesso");
+            capturarScreenshot(gerarNomeArquivo("termos_nao_aceitos"), test);
 
         } catch (Exception e) {
-            capturarScreenshot("erro_termos_nao_aceitos", test);
-            test.fail("❌ Teste falhou: " + e.getMessage());
+            capturarScreenshot(gerarNomeArquivo("erro_termos_nao_aceitos"), test);
+            test.fail("Teste falhou: " + e.getMessage());
             Assertions.fail(e);
         }
     }
+
+
+
 }
